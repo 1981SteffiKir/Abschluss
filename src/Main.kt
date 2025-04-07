@@ -1,3 +1,5 @@
+import javax.management.modelmbean.ModelMBean
+
 fun main() {
     //Basisproduktklasse
     open class Produkt (val name: String, val preis: Double,var bewertung: Double){
@@ -83,5 +85,28 @@ class Store{
    fun sortiereAphabetisch(){
        produkte.sortBy { it.name }
    }
-
+//Filterfunktion nach Katalog
+fun filterNachKatalog(kategorie: String) List<produkt>{
+    return produkte.filter {
+        when(kategorie){
+            "Mode"-> it is Mode
+            "Schmuck"-> it is Schmuck
+            else -< false
+        }
+    }
+}
+    //Benutzer anlege
+    fun benutzerAnlegen(Account){
+        accounts.add(account)
+    }
+    //Login-Funktion
+    fun login(benutzername: String,passwort: String)Account?{
+        return accounts.find {
+            it.benutzername==Benutzername&&it.login(paswort)
+        }
+    }
+}
+//Hauptprogramm
+fun main(){
+    val store=Store()
 }
