@@ -109,4 +109,30 @@ fun filterNachKatalog(kategorie: String) List<produkt>{
 //Hauptprogramm
 fun main(){
     val store=Store()
+
+    // Hauptprogramm
+    fun main(){
+        val betreiber = BetreiberAccount("Lena", "Lena123",34)
+        val kunde = KundenAccount("Tara", "passwort123", 26)
+        store.benutzerAnlegen(betreiber)
+        store.benutzerAnlegen(kunde)
+
+        //Login als Betreiber
+        val eingeloggterBetreiber = store.login("Lena", "passwort123") as?
+                BetreiberAccount
+        if (eingeloggterBetreiber != null){
+            //Produkte hinzufügen
+            val neuesProdukt = Schmuck("Armband", 79.99, 4.8, "Sun1")
+            eingeloggterBetreiber.produktHinzufuegen(neuesProdukt)
+            println("Produkte hinzufügen: ${neuesProdukt.getProduktDetails()}")
+        }
+
+        //Login als Kunde
+        val eingeloggterKunde = store.login("Tara", "passwort123") as?
+                KundenAccount
+        if (eingeloggterKunde !=null){
+            //
+        }
+
+    }
 }
