@@ -131,8 +131,19 @@ fun main(){
         val eingeloggterKunde = store.login("Tara", "passwort123") as?
                 KundenAccount
         if (eingeloggterKunde !=null){
-            //
+            //Produkte zum Warenkorb hinzufügen
+            eingeloggterKunde.fuegeZumWarenkorbHinzu(store.produkte[0])
+            println("Gesamtpreis im Warenkorb"): €$
+            {eingeloggterKunde.gesamtpreis()}")
         }
 
-    }
-}
+        //Produkte nach Preise sortieren und anzeigen
+        store.sortierenNachPreise()
+        println("\nProdukt nach Preis sortieren:")
+        store.produkte.forEach { println(it.getProdukteDetails()) }
+
+        //Produkte nachKategorie filtern und Anzeigen
+        println("\nGefilterte Produkte - Kategorie: Mode")
+        val modeProdukt = store.filterNachKatalog("Mode")
+        modeProdukt.forEach{ println(it.getProduktDetails()) }
+    }}
