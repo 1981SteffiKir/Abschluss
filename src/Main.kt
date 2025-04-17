@@ -1,161 +1,188 @@
+import java.util.*
+
 fun main() {
-    // Basisproduktklasse
-    open class Produkt(val name: String, val preis: Double, var bewertung: Double) {
-        open fun getProduktDetails(): String {
-            return "$name - Preis: €$preis, Bewertung: $bewertung/5"
-        }
-    }
 
-    // Modeprodukt als Unterklasse von Produkt
-    class Mode(name: String, preis: Double, bewertung: Double, val typ: String) :
-        Produkt(name, preis, bewertung) {
-        override fun getProduktDetails(): String {
-            return "Modeartikel ($typ): $name - Preis: €$preis, Bewertung: $bewertung/5"
-        }
-    }
+// -------------------- Klassen --------------------
 
-    // Modeschmuckprodukt als Unterklasse von Produkt
-    class Schmuck(name: String, preis: Double, bewertung: Double, val marke: String) :
-        Produkt(name, preis, bewertung) {
-        override fun getProduktDetails(): String {
-            return "Modeschmuck ($marke): $name - Preis: €$preis, Bewertung: $bewertung/5"
-        }
-    }
+             open class Produkt(val name: String, val preis: Double, var bewertung: Double) {
+         open fun getProduktDetails(): String {
+             return "$name - Preis: €$preis, Bewertung: $bewertung/5"
+         }
+     }
 
-    // Basis Account-Klasse
-    open class Account(val benutzername: String, val passwort: String, val alter: Int) {
-        val id: Int = benutzername.hashCode()
+     class Mode(name: String, preis: Double, bewertung: Double, val typ: String) :
+         Produkt(name, preis, bewertung) {
+         override fun getProduktDetails(): String {
+             return "Modeartikel ($typ): $name - Preis: €$preis, Bewertung: $bewertung/5"
+         }
+     }
 
-        open fun istErlaubt(): Boolean {
-            return alter >= 12
-        }
+     class Schmuck(name: String, preis: Double, bewertung: Double, val marke: String) :
+         Produkt(name, preis, bewertung) {
+         override fun getProduktDetails(): String {
+             return "Modeschmuck ($marke): $name - Preis: €$preis, Bewertung: $bewertung/5"
+         }
+     }
 
-        open fun login(passwortInput: String): Boolean {
-            return passwortInput == passwort
-        }
-    }
+     open class Account(val benutzername: String, private var passwort: String, val alter: Int) {
+         val id: Int = benutzername.hashCode()
 
-    // Kundenaccount, der von Account erbt
-    class KundenAccount(benutzername: String, passwort: String, alter: Int) :
-        Account(benutzername, passwort, alter) {
-        val zahlungsmethode: String = "Kreditkarte"
-        val warenkorb: MutableList<Produkt> = mutableListOf()
+         open fun istErlaubt(): Boolean {
+             return alter >= 12
+         }
 
-        fun fuegeZumWarenkorbHinzu(produkt: Produkt) {
-            warenkorb.add(produkt)
-        }
+         open fun login(passwortInput: String): Boolean {
+             return passwortInput == passwort
+         }
 
-        fun gesamtpreis(): Double {
-            return warenkorb.sumOf { it.preis }
-        }
+         fun passwortAendern(neuesPasswort: String) {
+             passwort = neuesPasswort
+         }
+     }
 
-        fun bewertungAbgabe(produkt: Produkt, bewertung: Double) {
-            produkt.bewertung = bewertung
-        }
+     class KundenAccount(benutzername: String, passwort: String, alter: Int) :
+         Account(benutzername, passwort, alter) {
+         val zahlungsmethode: String = "Kreditkarte"
+         val warenkorb: MutableList<Produkt> = mutableListOf()
 
-        override fun istErlaubt(): Boolean {
-            return alter >= 12
-        }
-    }
+         fun fuegeZumWarenkorbHinzu(produkt: Produkt) {
+             warenkorb.add(produkt)
+         }
 
-    // Betreiberaccount, der von Account erbt
-    class BetreiberAccount(benutzername: String, passwort: String, alter: Int) :
-        Account(benutzername, passwort, alter) {
-        val produkte: MutableList<Produkt> = mutableListOf()
+         fun gesamtpreis(): Double {
+             return warenkorb.sumOf { it.preis }
+         }
 
-        fun produktHinzufuegen(produkt: Produkt) {
-            produkte.add(produkt)
-        }
+         fun bewertungAbgabe(produkt: Produkt, bewertung: Double) {
+             produkt.bewertung = bewertung
+         }
+     }
 
-        fun produktEntfernen(produkt: Produkt) {
-            produkte.remove(produkt)
-        }
+     class BetreiberAccount(benutzername: String, passwort: String, alter: Int) :
+         Account(benutzername, passwort, alter) {
+         val produkte: MutableList<Produkt> = mutableListOf()
 
-        fun nachbestellen(produkt: Produkt) {
-            produkte.add(produkt)
-        }
-    }
+         fun produktHinzufuegen(produkt: Produkt) {
+             produkte.add(produkt)
+         }
 
-    // Store-Klasse für das Management von Produkten und Accounts
-    class Store {
-        val produkte: MutableList<Produkt> = mutableListOf()
-        val accounts: MutableList<Account> = mutableListOf()
+         fun produktEntfernen(produkt: Produkt) {
+             produkte.remove(produkt)
+         }
 
-        init {
-            // Initialisierung von Produkten
-            produkte.add(Mode("T-Shirt", 24.99, 4.5, "T-Shirt"))
-            produkte.add(Mode("Jacke", 149.99, 3.8, "Jacke"))
-            produkte.add(Schmuck("Halskette", 89.99, 4.2, "Sun"))
-            produkte.add(Schmuck("Ring", 79.99, 4.3, "Love"))
-        }
+         fun nachbestellen(produkt: Produkt) {
+             produkte.add(produkt)
+         }
+     }
 
-        // Methode, um Produkte nach Preisen zu sortieren
-        fun sortierenNachPreisen() {
-            produkte.sortBy { it.preis }
-        }
+     class Store {
+         val produkte: MutableList<Produkt> = mutableListOf()
+         val accounts: MutableList<Account> = mutableListOf()
 
-        // Methode, um Produkte alphabetisch zu sortieren
-        fun sortiereAlphabetisch() {
-            produkte.sortBy { it.name }
-        }
+         init {
+             produkte.add(Mode("T-Shirt", 24.99, 4.5, "Oberteil"))
+             produkte.add(Mode("Jacke", 149.99, 3.8, "Jacke"))
+             produkte.add(Schmuck("Halskette", 89.99, 4.2, "Sun"))
+             produkte.add(Schmuck("Ring", 79.99, 4.3, "Love"))
+         }
 
-        // Filterfunktion nach Katalog
-        fun filterNachKatalog(kategorie: String): List<Produkt> {
-            return produkte.filter {
-                when (kategorie) {
-                    "Mode" -> it is Mode
-                    "Schmuck" -> it is Schmuck
-                    else -> false
-                }
-            }
-        }
+         fun sortierenNachPreisen() {
+             produkte.sortBy { it.preis }
+         }
 
-        // Benutzer anlegen
-        fun benutzerAnlegen(account: Account) {
-            accounts.add(account)
-        }
+         fun sortiereAlphabetisch() {
+             produkte.sortBy { it.name }
+         }
 
-        // Login-Funktion
-        fun login(benutzername: String, passwort: String): Account? {
-            return accounts.find {
-                it.benutzername == benutzername && it.login(passwort)
-            }
-        }
-    }
+         fun filterNachKatalog(kategorie: String): List<Produkt> {
+             return produkte.filter {
+                 when (kategorie.lowercase()) {
+                     "mode" -> it is Mode
+                     "schmuck" -> it is Schmuck
+                     else -> false
+                 }
+             }
+         }
 
-    // Hauptprogramm
-    val store = Store()
+         fun benutzerAnlegen(account: Account) {
+             accounts.add(account)
+         }
 
-    val betreiber = BetreiberAccount("Lena", "Lena123", 34)
-    val kunde = KundenAccount("Tara", "passwort123", 26)
+         fun login(benutzername: String, passwort: String): Account? {
+             return accounts.find {
+                 it.benutzername == benutzername && it.login(passwort)
+             }
+         }
+     }
 
-    store.benutzerAnlegen(betreiber)
-    store.benutzerAnlegen(kunde)
+// -------------------- main() Funktion --------------------
 
-    // Login als Betreiber
-    val eingeloggterBetreiber = store.login("Lena", "Lena123") as? BetreiberAccount
-    if (eingeloggterBetreiber != null) {
-        // Produkte hinzufügen
-        val neuesProdukt = Schmuck("Armband", 79.99, 4.8, "Sun1")
-        eingeloggterBetreiber.produktHinzufuegen(neuesProdukt)
-        println("Produkt hinzugefügt: ${neuesProdukt.getProduktDetails()}")
-    }
+    fun main() {
+         val scanner = Scanner (System.`in`)
+         val store = Store()
 
-    // Login als Kunde
-    val eingeloggterKunde = store.login("Tara", "passwort123") as? KundenAccount
-    if (eingeloggterKunde != null) {
-        // Produkte zum Warenkorb hinzufügen
-        eingeloggterKunde.fuegeZumWarenkorbHinzu(store.produkte[0])
-        println("Gesamtpreis im Warenkorb: €${eingeloggterKunde.gesamtpreis()}")
-    }
+         val betreiber = BetreiberAccount("Lena", "Lena123", 34)
+         val kunde = KundenAccount("Tara", "passwort123", 26)
 
-    // Produkte nach Preisen sortieren und anzeigen
-    store.sortierenNachPreisen()
-    println("\nProdukte nach Preis sortieren:")
-    store.produkte.forEach { println(it.getProduktDetails()) }
+         store.benutzerAnlegen(betreiber)
+         store.benutzerAnlegen(kunde)
 
-    // Produkte nach Kategorie filtern und anzeigen
-    println("\nGefilterte Produkte - Kategorie: Mode")
-    val modeProdukt = store.filterNachKatalog("Mode")
-    modeProdukt.forEach { println(it.getProduktDetails()) }
-}
+         var eingeloggterAccount: Account? = null
+
+         while (true) {
+             println("\n--- Hauptmenü ---")
+             println("1. Einloggen")
+             println("2. Alle Produkte anzeigen")
+             println("3. Produkte nach Kategorie anzeigen (Mode/Schmuck)")
+             println("4. Passwort ändern")
+             println("5. Beenden")
+             print("Wähle eine Option: ")
+
+             when (scanner.nextLine()) {
+                 "1" -> {
+                     print("Benutzername: ")
+                     val benutzername = scanner.nextLine()
+                     print("Passwort: ")
+                     val passwort = scanner.nextLine()
+
+                     eingeloggterAccount = store.login(benutzername, passwort)
+                     if (eingeloggterAccount != null) {
+                         println("Erfolgreich eingeloggt als ${eingeloggterAccount.benutzername}")
+                     } else {
+                         println("Login fehlgeschlagen.")
+                     }
+                 }
+
+                 "2" -> {
+                     println("\n--- Alle Produkte ---")
+                     store.produkte.forEach { println(it.getProduktDetails()) }
+                 }
+
+                 "3" -> {
+                     print("Kategorie eingeben (Mode oder Schmuck): ")
+                     val kategorie = scanner.nextLine()
+                     val gefiltert = store.filterNachKatalog(kategorie)
+                     println("\nProdukte der Kategorie \"$kategorie\":")
+                     gefiltert.forEach { println(it.getProduktDetails()) }
+                 }
+
+                 "4" -> {
+                     if (eingeloggterAccount != null) {
+                         print("Neues Passwort eingeben: ")
+                         val neuesPasswort = scanner.nextLine()
+                         eingeloggterAccount.passwortAendern(neuesPasswort)
+                         println("Passwort erfolgreich geändert.")
+                     } else {
+                         println("Bitte zuerst einloggen.")
+                     }
+                 }
+
+                 "5" -> {
+                     println("Programm wird beendet.")
+                     break
+                 }
+
+                 else -> println("Ungültige Eingabe.")
+             }
+         }
+     }}
